@@ -1,276 +1,772 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BobaMasterFPS — Support & Links</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BobaMasterFPS — Support & Links (Full, White Glow)</title>
 
-<!-- Fonts & Libraries -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Fonts & Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<style>
-:root {
-  --bg: #000;
-  --card-bg: rgba(20,20,20,0.6);
-  --border: rgba(255,255,255,0.05);
-  --muted: #aaa;
-  --accent: #fff;
-  --font: 'Poppins', sans-serif;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  height: 100%;
-  font-family: var(--font);
-  background: var(--bg) url('c7e35a6e-fe4c-4cc4-85a8-972250ec4c08.png') center/cover no-repeat fixed;
-  color: #fff;
-  overflow: hidden;
-}
+  <style>
+    /* ====================================================
+       THEME / VARIABLES
+       ==================================================== */
+    :root{
+      --bg: #000000;                       /* page background (black) */
+      --card-bg: rgba(18,18,18,0.66);      /* translucent glass card */
+      --border: rgba(255,255,255,0.06);    /* subtle white border */
+      --muted: #bfbfbf;                    /* muted white for secondary text */
+      --accent: #ffffff;                   /* primary white accent color */
+      --glass-padding: 36px;
+      --font: 'Poppins', sans-serif;
 
-/* glowing text */
-.title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 0 8px #fff, 0 0 15px #fff;
-}
-.subtitle {
-  font-size: 14px;
-  color: var(--muted);
-  margin-top: 6px;
-}
+      /* Glow specifics — strictly white only */
+      --glow-white-strong: rgba(255,255,255,0.98);
+      --glow-white-medium: rgba(255,255,255,0.32);
+      --glow-white-soft: rgba(255,255,255,0.12);
 
-/* main card */
-.container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 40px 30px;
-  text-align: center;
-  backdrop-filter: blur(20px);
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 0 25px rgba(255,255,255,0.05);
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 0 auto 10px;
-  border: 2px solid rgba(255,255,255,0.2);
-}
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
+      /* shadows */
+      --shadow-dark: rgba(0,0,0,0.64);
+      --shadow-soft: rgba(0,0,0,0.46);
 
-/* status block */
-.status {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin: 15px auto;
-  padding: 10px;
-  max-width: 320px;
-  font-size: 13px;
-  color: #ccc;
-  line-height: 1.4;
-}
+      /* animation timing */
+      --float-duration: 4.8s;
+      --pulse-duration: 1.6s;
+    }
 
-/* social icons */
-.socials {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 15px 0;
-}
-.socials a {
-  width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  color: #fff;
-  text-decoration: none;
-  font-size: 18px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
-  transition: transform .2s, box-shadow .2s;
-}
-.socials a:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 15px rgba(255,255,255,0.5);
-}
+    /* ====================================================
+       BASIC RESET
+       ==================================================== */
+    *{ box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; }
+    body{
+      min-height:100vh;
+      font-family:var(--font);
+      background: var(--bg) url('c7e35a6e-fe4c-4cc4-85a8-972250ec4c08.png') center/cover fixed no-repeat;
+      color: var(--accent);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      overflow:hidden; /* keep page clean, snow goes on top via fixed positioning */
+    }
 
-/* QR + Donate */
-.qwrap {
-  width: 140px; height: 140px;
-  margin: 15px auto;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.05);
-  display: flex; align-items: center; justify-content: center;
-}
-#qrcode { width: 120px; height: 120px; }
+    /* ====================================================
+       CARD / LAYOUT
+       ==================================================== */
+    .container{
+      width:100%;
+      max-width:460px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: var(--glass-padding);
+      text-align:center;
+      backdrop-filter: blur(16px) saturate(1.05);
+      box-shadow: 0 12px 48px var(--shadow-dark);
+      position: relative;
+      overflow: visible;
+      transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s;
+    }
+    .container:hover{ transform: translateY(-6px); box-shadow: 0 28px 90px var(--shadow-dark); }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-.btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  transition: background .2s;
-}
-.btn-primary { background: #fff; color: #000; }
+    /* ====================================================
+       AVATAR
+       ==================================================== */
+    .avatar{
+      width:132px;
+      height:132px;
+      margin: 0 auto 12px;
+      border-radius:50%;
+      overflow:hidden;
+      border: 2px solid rgba(255,255,255,0.12);
+      transition: transform .45s ease, box-shadow .35s;
+      display:inline-block;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-/* Thanks Modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.8);
-  backdrop-filter: blur(10px);
-}
-.modal-content {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  margin: 15% auto;
-  padding: 20px;
-  width: 80%;
-  max-width: 300px;
-  text-align: center;
-  animation: fadeIn 0.5s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.close:hover { color: #fff; }
+    .avatar:hover{
+      transform: scale(1.06);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.6), 0 0 14px var(--glow-white-medium);
+    }
 
-/* snowflakes */
-.snowflake {
-  position: fixed;
-  top: -10px;
-  color: #fff;
-  font-size: 10px;
-  opacity: 0.8;
-  animation: fall linear infinite;
-}
-@keyframes fall {
-  0% { transform: translateY(-10px); }
-  100% { transform: translateY(110vh); }
-}
-</style>
+    /* ====================================================
+       TEXT + GLOW (white only)
+       All textual elements get a base white glow.
+       Hover/focus increases intensity.
+       ==================================================== */
+    .title{
+      font-weight:800;
+      font-size:28px;
+      margin-bottom:4px;
+      color:var(--accent);
+      text-shadow:
+        0 0 6px var(--glow-white-strong),
+        0 0 18px var(--glow-white-medium);
+      animation: titlePulse 3.6s ease-in-out infinite;
+      letter-spacing: -0.6px;
+    }
+
+    .subtitle{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:10px;
+      text-shadow: 0 0 6px rgba(255,255,255,0.12);
+    }
+
+    @keyframes titlePulse {
+      0% { text-shadow: 0 0 5px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.12); transform: translateY(0); }
+      50% { text-shadow: 0 0 9px rgba(255,255,255,1), 0 0 28px rgba(255,255,255,0.18); transform: translateY(-2px); }
+      100% { text-shadow: 0 0 5px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.12); transform: translateY(0); }
+    }
+
+    .status{
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      margin: 12px auto;
+      font-size:13px;
+      color:#eaeaea;
+      line-height:1.4;
+      max-width:380px;
+      text-shadow: 0 0 6px rgba(255,255,255,0.06);
+    }
+
+    /* ====================================================
+       LIVE INDICATOR
+       ==================================================== */
+    .live-wrap{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+    .live-btn{ cursor:pointer; display:flex; align-items:center; gap:10px; border-radius:12px; padding:6px 10px; transition:background .2s; }
+    .live-btn:hover{ background: rgba(255,255,255,0.02); }
+
+    .live-dot{
+      width:12px; height:12px; border-radius:50%;
+      background:#3a3a3a; box-shadow:none; transition:all .25s;
+    }
+    .live-dot.on{
+      background: #ffffff;
+      box-shadow: 0 0 8px var(--glow-white-strong), 0 0 18px var(--glow-white-medium);
+      animation:livePulse 1s infinite alternate;
+      transform-origin:center;
+    }
+    .live-dot.off{ background:#3a3a3a; box-shadow:none; opacity:0.9; }
+    @keyframes livePulse { from{ transform: scale(1); } to{ transform: scale(1.45); } }
+
+    .live-text{
+      font-size:14px;
+      color:var(--muted);
+      transition: color .18s, text-shadow .18s;
+    }
+
+    /* When live, we'll add stronger white-only text glow using JS - keeps separation of concerns */
+
+    /* ====================================================
+       SOCIAL ICON ROW
+       Icons are white by default. Box gets soft white glow.
+       On hover/focus, icon and box glow stronger with pulse.
+       ==================================================== */
+    .socials{ display:flex; justify-content:center; gap:12px; margin:12px 0 8px; align-items:center; }
+    .social-item{
+      width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      text-decoration:none; background:rgba(255,255,255,0.02); color:var(--accent);
+      box-shadow: 0 8px 34px rgba(0,0,0,0.6);
+      transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s, filter .36s;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border:1px solid rgba(255,255,255,0.03);
+      position:relative; overflow:visible; cursor:pointer; user-select:none;
+      will-change: transform, box-shadow, filter;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* floating / breathing animation */
+    @keyframes floatY {
+      0% { transform: translateY(0px); box-shadow: 0 8px 34px rgba(0,0,0,0.6); }
+      50% { transform: translateY(-8px); box-shadow: 0 28px 60px rgba(0,0,0,0.66); }
+      100% { transform: translateY(0px); box-shadow: 0 8px 34px rgba(0,0,0,0.6); }
+    }
+    .social-item{ animation: floatY calc(var(--float-duration) * 1.12) ease-in-out infinite; }
+    .social-item:nth-child(1){ animation-delay: 0s; }
+    .social-item:nth-child(2){ animation-delay: .24s; }
+    .social-item:nth-child(3){ animation-delay: .48s; }
+    .social-item:nth-child(4){ animation-delay: .72s; }
+
+    /* SVGs strictly white (no tint) */
+    .social-item svg{ width:24px; height:24px; fill: var(--accent); display:block; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6)); transition: transform .28s, filter .28s; }
+
+    /* base subtle rim glow for all social boxes (white) */
+    .social-item::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      border-radius:12px;
+      box-shadow: 0 0 8px var(--glow-white-soft);
+      opacity:0.55;
+      pointer-events:none;
+      transition: box-shadow .28s, opacity .28s;
+    }
+
+    /* hover/focus: stronger white-only glow + icon pop */
+    .social-item:hover,
+    .social-item:focus {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.68), 0 0 20px var(--glow-white-medium);
+      outline: none;
+    }
+    .social-item:hover svg,
+    .social-item:focus svg {
+      transform: translateY(-2px) scale(1.06);
+      filter: drop-shadow(0 4px 20px var(--glow-white-medium));
+    }
+    .social-item:hover::after,
+    .social-item:focus::after {
+      box-shadow: 0 0 16px var(--glow-white-medium), 0 0 36px var(--glow-white-medium);
+      opacity:1;
+    }
+
+    /* small tooltip (on focus/hover) */
+    .social-item[title]:hover::before,
+    .social-item[title]:focus::before {
+      content: attr(title);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      opacity: 0.98;
+      z-index: 60;
+    }
+
+    /* ====================================================
+       QR + DONATION AMOUNTS
+       ==================================================== */
+    .qwrap{
+      width:156px; height:156px; margin:12px auto 6px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+      background: rgba(255,255,255,0.03); border:1px solid var(--border);
+      animation: floatY 5.6s ease-in-out infinite;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    #qrcode{ width:136px; height:136px; display:block; border-radius:8px; background:#fff; }
+
+    .donation-amounts{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+    .amount-btn{
+      padding:11px 16px; border-radius:12px; cursor:pointer;
+      background: rgba(255,255,255,0.06); color:var(--accent); font-weight:700;
+      border:1px solid rgba(255,255,255,0.04); min-width:76px; text-align:center;
+      transition: transform .28s cubic-bezier(.2,.9,.2,1), background .18s ease, box-shadow .28s, text-shadow .28s;
+      user-select:none;
+      animation: floatY 4.9s ease-in-out infinite;
+      text-shadow: 0 0 6px rgba(255,255,255,0.04);
+    }
+    .amount-btn:hover{ transform: translateY(-10px) scale(1.03); background: rgba(255,255,255,0.12); }
+    .amount-btn:focus{ outline: none; box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 14px var(--glow-white-medium); }
+
+    /* selected state: white background, text black, white text glow */
+    .amount-btn.selected{
+      background: #ffffff; color:#000; transform:scale(1.06);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 18px var(--glow-white-medium);
+      border:1px solid rgba(255,255,255,0.5);
+      text-shadow: 0 0 10px var(--glow-white-strong), 0 0 28px var(--glow-white-medium);
+    }
+
+    /* ====================================================
+       PAY BUTTON
+       ==================================================== */
+    .pay-row{ margin-top:16px; display:flex; justify-content:center; gap:10px; align-items:center; }
+    #payBtn{
+      padding:12px 26px; border-radius:14px; background:#ffffff; color:#000; border:none; font-weight:800; cursor:pointer;
+      transition: transform .16s ease, box-shadow .16s ease, text-shadow .16s ease;
+      box-shadow: 0 12px 44px var(--shadow-dark);
+      animation: floatY 5.2s ease-in-out infinite;
+    }
+    #payBtn:hover{ transform: translateY(-8px); box-shadow: 0 30px 80px var(--shadow-dark); }
+    #payBtn:focus{ outline:none; box-shadow: 0 28px 70px var(--shadow-dark), 0 0 18px var(--glow-white-medium); }
+
+    /* pay button text glow only on hover/focus */
+    #payBtn:hover, #payBtn:focus{
+      text-shadow: 0 0 10px var(--glow-white-strong), 0 0 22px var(--glow-white-medium);
+    }
+
+    .help-note{ font-size:12px; color:var(--muted); margin-top:10px; }
+
+    /* ====================================================
+       MODALS (Thanks & Sad)
+       ==================================================== */
+    .modal{
+      position:fixed; left:0; top:0; width:100%; height:100%;
+      display:none; align-items:center; justify-content:center;
+      background: rgba(0,0,0,0.66); z-index:1200;
+    }
+    .modal.show{ display:flex; }
+    .modal-card{
+      width:92%; max-width:420px; background:var(--card-bg); border-radius:14px; padding:20px; text-align:center;
+      border:1px solid var(--border); box-shadow:0 30px 80px rgba(0,0,0,0.7);
+      transform: translateY(0); animation: popIn .36s cubic-bezier(.2,.9,.2,1);
+    }
+    @keyframes popIn { from{ transform: translateY(8px) scale(.98); opacity:0 } to{ transform: translateY(0) scale(1); opacity:1 } }
+    .modal .modal-title{ font-size:20px; font-weight:800; margin-bottom:8px; text-shadow: 0 0 6px rgba(255,255,255,0.06); }
+    .modal .modal-text{ color:var(--muted); font-size:14px; margin-bottom:12px; }
+
+    .modal .closeX{ position:absolute; right:16px; top:14px; font-size:22px; color:var(--muted); cursor:pointer; }
+    .modal .closeX:hover{ color:var(--accent); }
+
+    .sad-emoji{ font-size:46px; display:block; margin-bottom:8px; transform:translateY(0); animation:dropSad 1.2s ease-in-out; }
+    @keyframes dropSad {
+      0%{ transform: translateY(-20px) scale(.95); opacity:0 }
+      60%{ transform: translateY(6px) scale(1.02); opacity:1 }
+      100%{ transform: translateY(0) scale(1) opacity:1 }
+    }
+    .thanks-emoji{ font-size:48px; margin-bottom:6px; animation:floatUp 1.2s ease-in-out; }
+    @keyframes floatUp {
+      0%{ transform: translateY(10px) scale(.96); opacity:0 }
+      60%{ transform: translateY(-6px) scale(1.02); opacity:1 }
+      100%{ transform: translateY(0) scale(1); opacity:1 }
+    }
+
+    /* ====================================================
+       SNOWFLAKES (continuous)
+       - Snow is created by JS and each snow element has its own animation duration
+       - We intentionally create a steady stream and do not clear it (infinite)
+       ==================================================== */
+    .snowflake{
+      position: fixed;
+      top: -16px;
+      color: #ffffff;
+      font-size: 10px;
+      opacity: .88;
+      pointer-events: none;
+      animation: fall linear infinite;
+      z-index: 9999;
+      will-change: transform, opacity;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    @keyframes fall {
+      0% { transform: translateY(-12vh) rotate(0deg) }
+      100% { transform: translateY(110vh) rotate(420deg) }
+    }
+
+    /* ====================================================
+       RESPONSIVE TWEAKS
+       ==================================================== */
+    @media (max-width:480px){
+      .container{ padding:20px; max-width:360px; }
+      .avatar{ width:110px; height:110px; }
+      .title{ font-size:22px; }
+      .social-item{ width:46px; height:46px; }
+      .qwrap{ width:138px; height:138px; }
+      .amount-btn{ min-width:64px; padding:9px 12px; }
+    }
+
+    /* keyboard focus visible */
+    .social-item:focus-visible,
+    .amount-btn:focus-visible,
+    #payBtn:focus-visible,
+    .live-btn:focus-visible{
+      outline: 2px solid rgba(255,255,255,0.12);
+      outline-offset: 6px;
+    }
+
+    /* small helper rule to ensure anchors are accessible */
+    a.social-item { display: inline-flex; }
+  </style>
 </head>
-
 <body>
-<canvas id="particles"></canvas>
 
-<div class="container">
-  <div class="avatar">
-  <img src="https://i.ibb.co/kVqQnJR0/IMG-20250628-110410-817.webp" alt="BobaMasterFPS Avatar">
-</div>
-  <div class="title">BobaMasterFPS</div>
-  <div class="subtitle">Competitive FPS Streamer</div>
-  <div class="status">Competitive FPS streamer • Jokes, gameplay & community. Drop by the stream — your support helps upgrades, giveaways & more!</div>
+  <!-- MAIN CARD -->
+  <div class="container" id="mainCard" role="region" aria-label="Support card">
 
-  <div class="socials">
-    <a href="https://discord.gg/K79u8V5FRd">💬</a>
-    <a href="https://www.twitch.tv/bobamasterfps">🎮</a>
-    <a href="https://www.youtube.com/@bobamasterfps">▶</a>
-    <a href="https://twitter.com/bobamasterfps">🐦</a>
+    <!-- Avatar -->
+    <div class="avatar" title="BobaMasterFPS avatar" aria-hidden="false">
+      <img src="https://i.ibb.co/kVqQnJR0/IMG-20250628-110410-817.webp" alt="BobaMasterFPS Avatar">
+    </div>
+
+    <!-- Live indicator -->
+    <div class="live-wrap" aria-hidden="false">
+      <div class="live-btn" id="liveBtn" title="Open Twitch channel" role="button" tabindex="0" aria-pressed="false" aria-label="Twitch live status">
+        <div id="liveDot" class="live-dot off" aria-hidden="true"></div>
+        <div id="liveText" class="live-text" aria-live="polite">Checking status...</div>
+      </div>
+    </div>
+
+    <!-- Title / subtitle -->
+    <div class="title" id="mainTitle">BobaMasterFPS</div>
+    <div class="subtitle" id="mainSubtitle">Competitive FPS Streamer</div>
+
+    <!-- Bio / status -->
+    <div class="status" id="bioBlock">
+      Competitive FPS streamer • Jokes, gameplay & community. Drop by the stream — your support helps upgrades, giveaways & more!
+    </div>
+
+    <!-- Social icons -->
+    <div class="socials" aria-hidden="false" role="navigation" aria-label="Social links">
+      <!-- Discord -->
+      <a class="social-item" id="discordLink" href="https://discord.gg/K79u8V5FRd" target="_blank" rel="noopener noreferrer" title="Discord" aria-label="Discord invite" tabindex="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.317 4.369a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.08.037 13.69 13.69 0 00-.607 1.25 18.753 18.753 0 00-5.772 0 12.663 12.663 0 00-.615-1.25.073.073 0 00-.08-.037A19.736 19.736 0 003.68 4.37a.067.067 0 00-.03.025C.533 9.045-.319 13.496.066 17.858a.082.082 0 00.031.056 19.916 19.916 0 006.11 3.07.075.075 0 00.082-.027c.47-.65.889-1.338 1.248-2.057a.075.075 0 00-.041-.104 13.87 13.87 0 01-1.97-.94.075.075 0 01-.007-.125c.132-.1.264-.202.393-.307a.075.075 0 01.081-.011c4.117 1.882 8.56 1.882 12.61 0a.075.075 0 01.083.01c.13.105.263.207.396.308a.075.075 0 01-.006.125c-.607.39-1.254.717-1.97.94a.075.075 0 00-.04.104c.36.72.78 1.407 1.25 2.058a.075.075 0 00.082.028 19.954 19.954 0 006.112-3.07.075.075 0 00.031-.056c.5-4.91-.838-9.336-3.548-13.464a.067.067 0 00-.03-.025zM8.02 15.331c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.183 1.095 2.156 2.418 0 1.334-.946 2.419-2.156 2.419zm7.974 0c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.183 1.095 2.156 2.418 0 1.334-.946 2.419-2.156 2.419z"/></svg>
+      </a>
+
+      <!-- Twitch -->
+      <a class="social-item" id="twitchLink" href="https://www.twitch.tv/bobamasterfps" target="_blank" rel="noopener noreferrer" title="Twitch" aria-label="Twitch channel" tabindex="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.652 3.5L3 6.153v11.694h5.063V22h2.61l2.41-2.153H19L21 16.347V3.5H4.652zM18.5 14.5l-1.25 1.25h-3.5l-1.25 1.25V14.5H6.25V4.75h12.25V14.5zM15.25 8.75h-1.5v3.5h1.5v-3.5zM11.5 8.75h-1.5v3.5h1.5v-3.5z"/></svg>
+      </a>
+
+      <!-- YouTube -->
+      <a class="social-item" id="youtubeLink" href="https://www.youtube.com/@bobamasterfps" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="YouTube channel" tabindex="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.499 6.203a2.903 2.903 0 00-2.043-2.056C19.571 3.5 12 3.5 12 3.5s-7.57 0-9.456.647A2.904 2.904 0 00.5 6.203 30.26 30.26 0 000 12a30.26 30.26 0 00.5 5.797 2.903 2.903 0 002.044 2.056C4.43 20.5 12 20.5 12 20.5s7.571 0 9.456-.647a2.903 2.903 0 002.043-2.056A30.26 30.26 0 0024 12a30.26 30.26 0 00-.501-5.797zM9.75 15.5v-7l6 3.5-6 3.5z"/></svg>
+      </a>
+
+      <!-- Twitter/X -->
+      <a class="social-item" id="twitterLink" href="https://x.com/bobamasterfps" target="_blank" rel="noopener noreferrer" title="X / Twitter" aria-label="Twitter/X" tabindex="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22.162 5.656c-.63.28-1.306.47-2.016.556.726-.436 1.284-1.127 1.547-1.95-.68.403-1.433.695-2.235.852C18.75 4.18 17.822 3.75 16.78 3.75c-1.562 0-2.83 1.266-2.83 2.828 0 .222.02.438.065.645-2.353-.118-4.44-1.244-5.842-2.957-.243.417-.383.902-.383 1.418 0 .98.498 1.846 1.256 2.354-.464-.015-.9-.142-1.282-.354v.036c0 1.366.973 2.504 2.263 2.762-.236.064-.485.099-.742.099-.181 0-.357-.017-.528-.05.357 1.115 1.395 1.928 2.626 1.95-0.96.753-2.167 1.203-3.48 1.203-.226 0-.448-.013-.665-.039 1.241.797 2.714 1.263 4.297 1.263 5.158 0 7.98-4.274 7.98-7.98 0-.122-.003-.243-.009-.364.55-.395 1.028-.887 1.404-1.45-.503.223-1.044.373-1.61.441.582-.348 1.03-.9 1.241-1.557z"/></svg>
+      </a>
+    </div>
+
+    <!-- QR -->
+    <div class="qwrap" aria-hidden="false" title="Scan to pay">
+      <canvas id="qrcode" width="136" height="136" role="img" aria-label="UPI QR code"></canvas>
+    </div>
+    <div style="font-size:13px;color:#d0d0d0;margin-top:6px">Donate via UPI: <b style="text-shadow: 0 0 8px rgba(255,255,255,0.9);">lazy.saifali@fam</b></div>
+
+    <!-- Donation amounts -->
+    <div class="donation-amounts" role="group" aria-label="Donation amounts">
+      <div class="amount-btn" data-amount="20" tabindex="0" role="button" aria-pressed="false">₹20</div>
+      <div class="amount-btn" data-amount="50" tabindex="0" role="button" aria-pressed="false">₹50</div>
+      <div class="amount-btn" data-amount="70" tabindex="0" role="button" aria-pressed="false">₹70</div>
+      <div class="amount-btn" data-amount="100" tabindex="0" role="button" aria-pressed="false">₹100</div>
+    </div>
+
+    <!-- Pay -->
+    <div class="pay-row">
+      <button id="payBtn" title="Open your UPI app to pay" aria-label="Pay">Pay</button>
+    </div>
+    <div class="help-note">Select an amount then click <strong>Pay</strong>. Payment opens the UPI app on mobile/desktop.</div>
   </div>
 
-  <div class="qwrap"><canvas id="qrcode"></canvas></div>
-  <div style="font-size:13px;color:#ccc">Donate via UPI: <b>lazy.saifali@fam</b></div>
-  <div class="buttons">
-    <button class="btn btn-primary" id="payBtn">Paid</button>
+  <!-- MODALS -->
+  <div id="thanksModal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle">
+      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0">&times;</div>
+      <div class="thanks-emoji">🎉</div>
+      <div id="thanksTitle" class="modal-title">Thank You!</div>
+      <div id="thanksText" class="modal-text">Your support means the world. You're helping the stream grow — much love! ❤️</div>
+    </div>
   </div>
-</div>
 
-<!-- Thanks Modal -->
-<div id="thanksModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2 style="color: #fff; font-size: 24px; margin-bottom: 10px;">Thank You! 🎉</h2>
-    <p style="color: #ccc; font-size: 14px;">Your support means the world to me! Let's keep the fun going. 🚀</p>
+  <div id="sadModal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="sadTitle">
+      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0">&times;</div>
+      <div class="sad-emoji">😢</div>
+      <div id="sadTitle" class="modal-title">Payment not completed</div>
+      <div id="sadText" class="modal-text">Looks like the payment wasn't completed. If this was a mistake, try again — we appreciate you! 💙</div>
+    </div>
   </div>
-</div>
 
-<script>
-// QR + Snow + Donate logic
-const UPI_ID = 'lazy.saifali@fam';
-const UPI_NAME = 'BobaMasterFPS';
-function buildUpi(amount=''){
-  return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}${amount?`&am=${amount}`:''}&tn=Thanks`;
-}
-const upiLink = buildUpi('');
-new QRious({element: document.getElementById('qrcode'), value: upiLink, size: 120, background: 'white', foreground: '#000'});
+  <!-- SCRIPTS -->
+  <script>
+    /**************************************************************************
+     * Config & constants
+     **************************************************************************/
+    const UPI_ID = 'lazy.saifali@fam';
+    const UPI_NAME = 'BobaMasterFPS';
+    const UPI_CURRENCY = 'INR';
+    const TWITCH_USERNAME = 'bobamasterfps';
+    const TWITCH_CLIENT_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko'; // public client-id for simple checks
 
-// Modified Pay Button: Show thanks modal with confetti animation
-document.getElementById('payBtn').onclick = function() {
-  // Trigger confetti
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 }
-  });
-  
-  // Show modal
-  document.getElementById('thanksModal').style.display = 'block';
-  
-  // Optionally, still redirect to UPI after a delay (simulate payment)
-  setTimeout(() => {
-    location.href = upiLink;
-  }, 2000); // 2 seconds delay to show thanks
-};
+    let selectedAmount = null;
+    const amountButtons = Array.from(document.querySelectorAll('.amount-btn'));
+    const payBtn = document.getElementById('payBtn');
 
-// Function to close modal
-function closeModal() {
-  document.getElementById('thanksModal').style.display = 'none';
-}
+    /**************************************************************************
+     * QR CODE (QRious)
+     **************************************************************************/
+    function buildUpiHref(amount = '') {
+      const amParam = amount ? `&am=${encodeURIComponent(amount)}` : '';
+      return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}${amParam}&cu=${UPI_CURRENCY}&tn=${encodeURIComponent('Support BobaMasterFPS')}`;
+    }
 
-// Close modal on outside click
-window.onclick = function(event) {
-  const modal = document.getElementById('thanksModal');
-  if (event.target == modal) {
-    modal.style.display = 'none';
-  }
-};
+    function refreshQRCode() {
+      const canvas = document.getElementById('qrcode');
+      const qrVal = buildUpiHref(selectedAmount || '');
+      try {
+        new QRious({ element: canvas, value: qrVal, size: 136, background: 'white', foreground: '#000' });
+      } catch (e) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px Poppins';
+        ctx.fillText('QR error', 10, 64);
+      }
+    }
+    refreshQRCode();
 
-// Snowflakes
-function createSnowflake(){
-  const snow = document.createElement('div');
-  snow.classList.add('snowflake');
-  snow.textContent = '❆';
-  snow.style.left = Math.random() * 100 + 'vw';
-  snow.style.animationDuration = 4 + Math.random() * 6 + 's';
-  document.body.appendChild(snow);
-  setTimeout(()=>snow.remove(),10000);
-}
-setInterval(createSnowflake,200);
-</script>
+    /**************************************************************************
+     * Amount button interactions (select / highlight)
+     **************************************************************************/
+    amountButtons.forEach((btn)=>{
+      btn.addEventListener('click', ()=>{
+        amountButtons.forEach(b=>{
+          b.classList.remove('selected');
+          b.setAttribute('aria-pressed','false');
+        });
+        btn.classList.add('selected');
+        btn.setAttribute('aria-pressed','true');
+        selectedAmount = btn.dataset.amount;
+        refreshQRCode();
+      });
+      btn.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); btn.click(); }
+      });
+    });
+
+    /**************************************************************************
+     * Snow effect — continuous and lively
+     * - Start with a burst to make the scene feel populated immediately
+     * - Keep a steady interval creating snow every short interval
+     * - Each snowflake uses randomized duration/size/opac and removes itself
+     * - We do NOT clear the interval (infinite snow). Do not rely on beforeunload.
+     **************************************************************************/
+    function createSnowflake(){
+      const s = document.createElement('div');
+      s.className = 'snowflake';
+      // choose snow glyph set for variety
+      const glyphs = ['❆','❅','✻','✷','✵'];
+      s.innerText = glyphs[Math.floor(Math.random() * glyphs.length)];
+      // randomized left position, size, opacity, speed
+      const left = Math.random() * 100;
+      const size = 8 + Math.random() * 18; // px
+      const dur = 6 + Math.random() * 10; // seconds
+      const delay = Math.random() * 2; // start delay
+      const opacity = 0.45 + Math.random() * 0.6;
+      s.style.left = left + 'vw';
+      s.style.fontSize = size + 'px';
+      s.style.opacity = opacity;
+      s.style.animationDuration = dur + 's';
+      s.style.animationDelay = '-' + (Math.random() * 6).toFixed(2) + 's'; // staggered so page starts filled
+      document.body.appendChild(s);
+      // cleanup after animation end (buffer a bit)
+      setTimeout(()=> { if(s && s.parentNode) s.parentNode.removeChild(s); }, (dur + 2) * 1000);
+      return s;
+    }
+
+    // initial burst (create many quickly so page feels alive immediately)
+    (function initialSnowBurst(){
+      for(let i=0;i<56;i++){
+        setTimeout(createSnowflake, i * 60);
+      }
+    })();
+
+    // steady stream: create a snowflake frequently -> always-on effect
+    const snowInterval = setInterval(createSnowflake, 160); // every 160ms create a flake -> dense but performant
+
+    // NOTE: we intentionally do NOT clear snowInterval; snow flows continuously
+
+    /**************************************************************************
+     * Confetti helpers
+     **************************************************************************/
+    function burstConfetti(){
+      try{
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        setTimeout(()=> confetti({ particleCount: 90, spread: 110, origin: { y: 0.55 } }), 250);
+      } catch(e){ /* confetti lib might error in some envs; ignore gracefully */ }
+    }
+
+    /**************************************************************************
+     * Modal helpers
+     **************************************************************************/
+    const thanksModal = document.getElementById('thanksModal');
+    const sadModal = document.getElementById('sadModal');
+
+    function openThanksModal(){
+      burstConfetti();
+      thanksModal.classList.add('show');
+      thanksModal.setAttribute('aria-hidden','false');
+    }
+    function openSadModal(title, text){
+      if(title) document.getElementById('sadTitle').innerText = title;
+      if(text)  document.getElementById('sadText').innerText = text;
+      sadModal.classList.add('show');
+      sadModal.setAttribute('aria-hidden','false');
+    }
+    function closeAllModals(){
+      thanksModal.classList.remove('show');
+      thanksModal.setAttribute('aria-hidden','true');
+      sadModal.classList.remove('show');
+      sadModal.setAttribute('aria-hidden','true');
+    }
+    [thanksModal, sadModal].forEach(m=>{
+      m.addEventListener('click', (e)=>{ if(e.target === m) closeAllModals(); });
+    });
+
+    /**************************************************************************
+     * Pay button behavior
+     **************************************************************************/
+    payBtn.addEventListener('click', async ()=>{
+      if(!selectedAmount){
+        openSadModal('No amount selected', 'Please pick an amount (₹20/₹50/₹70/₹100) before hitting Pay.');
+        return;
+      }
+      const proceed = confirm(`You selected ₹${selectedAmount}. Proceed to open UPI app?`);
+      if(!proceed){
+        openSadModal('Payment cancelled', "Looks like you changed your mind. You can try again anytime — thanks for considering!");
+        return;
+      }
+      const upiHref = buildUpiHref(selectedAmount);
+      sessionStorage.setItem('payment_attempt_ts', Date.now());
+      sessionStorage.setItem('payment_amount', selectedAmount);
+      // redirect to UPI; typically opens native UPI on mobile if available
+      window.location.href = upiHref;
+      // fallback: if still visible after short delay, show helpful modal
+      setTimeout(()=>{
+        if(document.visibilityState === 'visible'){
+          openSadModal('Unable to open payment app', 'If your device did not open the UPI app, try again or copy the UPI ID: ' + UPI_ID);
+        }
+      }, 2600);
+    });
+
+    payBtn.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); payBtn.click(); }
+    });
+
+    /**************************************************************************
+     * Twitch live status check (polling)
+     * - Uses Kraken v5 endpoint with a public client id for a simple stream presence check.
+     * - If CORS blocks this on some hosts, the status will be 'Status unavailable'.
+     * - We keep checks at a sensible interval to avoid being blocked.
+     **************************************************************************/
+    const liveDot = document.getElementById('liveDot');
+    const liveText = document.getElementById('liveText');
+    const liveBtn = document.getElementById('liveBtn');
+
+    async function checkTwitchLive(){
+      try{
+        const res = await fetch(`https://api.twitch.tv/kraken/streams/${encodeURIComponent(TWITCH_USERNAME)}`, {
+          headers: {
+            'Client-ID': TWITCH_CLIENT_ID,
+            'Accept': 'application/vnd.twitchtv.v5+json'
+          }
+        });
+        if(!res.ok){
+          throw new Error('Twitch API error: ' + res.status);
+        }
+        const data = await res.json();
+        if(data && data.stream){
+          // LIVE
+          liveDot.classList.remove('off'); liveDot.classList.add('on');
+          liveText.innerText = 'LIVE on Twitch 🎮';
+          liveText.style.color = '#ffffff';
+          liveText.style.textShadow = '0 0 10px rgba(255,255,255,0.98), 0 0 22px rgba(255,255,255,0.32)';
+          liveBtn.setAttribute('aria-pressed','true');
+        } else {
+          // OFFLINE
+          liveDot.classList.remove('on'); liveDot.classList.add('off');
+          liveText.innerText = 'Offline — Not live';
+          liveText.style.color = 'var(--muted)';
+          liveText.style.textShadow = 'none';
+          liveBtn.setAttribute('aria-pressed','false');
+        }
+      } catch(err){
+        // error handling (CORS, network, other)
+        console.warn('Twitch status check failed:', err);
+        liveDot.classList.remove('on'); liveDot.classList.add('off');
+        liveText.innerText = 'Status unavailable';
+        liveText.style.color = 'var(--muted)';
+        liveText.style.textShadow = 'none';
+        liveBtn.setAttribute('aria-pressed','false');
+      }
+    }
+
+    // initial then periodic check
+    checkTwitchLive();
+    setInterval(checkTwitchLive, 30000); // every 30s
+
+    // clicking live area opens twitch channel in new tab
+    liveBtn.addEventListener('click', ()=> {
+      window.open(`https://twitch.tv/${TWITCH_USERNAME}`, '_blank', 'noopener');
+    });
+    liveBtn.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); liveBtn.click(); } });
+
+    /**************************************************************************
+     * Social icons keyboard support (open on Enter)
+     **************************************************************************/
+    const socialLinks = [
+      { el: document.getElementById('discordLink'), url: 'https://discord.gg/K79u8V5FRd' },
+      { el: document.getElementById('twitchLink'), url: 'https://www.twitch.tv/bobamasterfps' },
+      { el: document.getElementById('youtubeLink'), url: 'https://www.youtube.com/@bobamasterfps' },
+      { el: document.getElementById('twitterLink'), url: 'https://x.com/bobamasterfps' }
+    ];
+    socialLinks.forEach(item=>{
+      item.el.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); window.open(item.url, '_blank', 'noopener'); } });
+      item.el.addEventListener('click', (e)=> { e.stopPropagation(); /* anchor default will open */ });
+    });
+
+    /**************************************************************************
+     * Page load: check url params for payment status
+     **************************************************************************/
+    function checkUrlPaymentStatus(){
+      try{
+        const url = new URL(window.location.href);
+        const status = url.searchParams.get('payment');
+        if(status === 'success'){
+          setTimeout(()=> openThanksModal(), 550);
+        } else if(status === 'failed'){
+          setTimeout(()=> openSadModal('Payment failed or cancelled', 'It looks like the payment didn’t finish. Try again or contact support.'), 550);
+        } else {
+          const attemptTs = sessionStorage.getItem('payment_attempt_ts');
+          const amount = sessionStorage.getItem('payment_amount');
+          if(attemptTs && amount){
+            const diff = Date.now() - Number(attemptTs);
+            if(diff > 3000 && diff < 180000){
+              // recent attempt — leave quiet, no modal by default
+              console.log('recent payment attempt:', amount, 'ms ago', diff);
+            }
+          }
+        }
+      } catch(e){
+        console.warn('Failed to parse URL payment status', e);
+      }
+    }
+    checkUrlPaymentStatus();
+
+    /**************************************************************************
+     * Developer convenience: double-click pay toggles label
+     **************************************************************************/
+    payBtn.addEventListener('dblclick', ()=>{
+      payBtn.innerText = (payBtn.innerText.trim().toLowerCase() === 'pay') ? 'Paid' : 'Pay';
+      payBtn.style.transform = 'scale(1.06)';
+      setTimeout(()=> payBtn.style.transform = '', 160);
+    });
+
+    /**************************************************************************
+     * Accessibility: make sure modal close X are keyboard accessible
+     **************************************************************************/
+    document.querySelectorAll('.closeX').forEach(el=>{
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); el.click(); }
+      });
+    });
+
+    /**************************************************************************
+     * Cleanup note:
+     * - We intentionally DO NOT clear the snow interval to keep snow infinite.
+     * - Beforeunload used to clear intervals, but user requested continuous snow;
+     *   clearing on unload isn't necessary and may stop the effect in some embed contexts.
+     **************************************************************************/
+
+    // END OF SCRIPT
+  </script>
 </body>
-
 </html>
