@@ -11,9 +11,9 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* ====================================================
-       THEME / VARIABLES
-       ==================================================== */
+    /* =========================================================================
+       THEME / ROOT VARS
+       ========================================================================= */
     :root{
       --bg: #000000;                       /* page background (black) */
       --card-bg: rgba(18,18,18,0.66);      /* translucent glass card */
@@ -35,11 +35,14 @@
       /* animation timing */
       --float-duration: 4.8s;
       --pulse-duration: 1.6s;
+
+      /* responsive break */
+      --max-width: 560px;
     }
 
-    /* ====================================================
+    /* =========================================================================
        BASIC RESET
-       ==================================================== */
+       ========================================================================= */
     *{ box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
     html,body{ height:100%; }
     body{
@@ -53,21 +56,21 @@
       align-items:center;
       justify-content:center;
       padding:20px;
-      overflow:hidden; /* keep page clean, snow goes on top via fixed positioning */
+      overflow:hidden; /* keep page clean; snow is appended to body */
     }
 
-    /* ====================================================
+    /* =========================================================================
        CARD / LAYOUT
-       ==================================================== */
+       ========================================================================= */
     .container{
       width:100%;
-      max-width:460px;
+      max-width:var(--max-width);
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: var(--glass-padding);
       text-align:center;
-      backdrop-filter: blur(16px) saturate(1.05);
+      backdrop-filter: blur(14px) saturate(1.05);
       box-shadow: 0 12px 48px var(--shadow-dark);
       position: relative;
       overflow: visible;
@@ -75,9 +78,9 @@
     }
     .container:hover{ transform: translateY(-6px); box-shadow: 0 28px 90px var(--shadow-dark); }
 
-    /* ====================================================
+    /* =========================================================================
        AVATAR
-       ==================================================== */
+       ========================================================================= */
     .avatar{
       width:132px;
       height:132px;
@@ -96,11 +99,9 @@
       box-shadow: 0 18px 50px rgba(0,0,0,0.6), 0 0 14px var(--glow-white-medium);
     }
 
-    /* ====================================================
+    /* =========================================================================
        TEXT + GLOW (white only)
-       All textual elements get a base white glow.
-       Hover/focus increases intensity.
-       ==================================================== */
+       ========================================================================= */
     .title{
       font-weight:800;
       font-size:28px;
@@ -135,13 +136,13 @@
       font-size:13px;
       color:#eaeaea;
       line-height:1.4;
-      max-width:380px;
+      max-width:520px;
       text-shadow: 0 0 6px rgba(255,255,255,0.06);
     }
 
-    /* ====================================================
+    /* =========================================================================
        LIVE INDICATOR
-       ==================================================== */
+       ========================================================================= */
     .live-wrap{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
     .live-btn{ cursor:pointer; display:flex; align-items:center; gap:10px; border-radius:12px; padding:6px 10px; transition:background .2s; }
     .live-btn:hover{ background: rgba(255,255,255,0.02); }
@@ -163,16 +164,16 @@
       font-size:14px;
       color:var(--muted);
       transition: color .18s, text-shadow .18s;
+      max-width:320px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
 
-    /* When live, we'll add stronger white-only text glow using JS - keeps separation of concerns */
-
-    /* ====================================================
+    /* =========================================================================
        SOCIAL ICON ROW
-       Icons are white by default. Box gets soft white glow.
-       On hover/focus, icon and box glow stronger with pulse.
-       ==================================================== */
-    .socials{ display:flex; justify-content:center; gap:12px; margin:12px 0 8px; align-items:center; }
+       ========================================================================= */
+    .socials{ display:flex; justify-content:center; gap:12px; margin:12px 0 8px; align-items:center; flex-wrap:wrap; }
     .social-item{
       width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center;
       text-decoration:none; background:rgba(255,255,255,0.02); color:var(--accent);
@@ -188,22 +189,8 @@
       justify-content:center;
     }
 
-    /* floating / breathing animation */
-    @keyframes floatY {
-      0% { transform: translateY(0px); box-shadow: 0 8px 34px rgba(0,0,0,0.6); }
-      50% { transform: translateY(-8px); box-shadow: 0 28px 60px rgba(0,0,0,0.66); }
-      100% { transform: translateY(0px); box-shadow: 0 8px 34px rgba(0,0,0,0.6); }
-    }
-    .social-item{ animation: floatY calc(var(--float-duration) * 1.12) ease-in-out infinite; }
-    .social-item:nth-child(1){ animation-delay: 0s; }
-    .social-item:nth-child(2){ animation-delay: .24s; }
-    .social-item:nth-child(3){ animation-delay: .48s; }
-    .social-item:nth-child(4){ animation-delay: .72s; }
-
-    /* SVGs strictly white (no tint) */
     .social-item svg{ width:24px; height:24px; fill: var(--accent); display:block; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6)); transition: transform .28s, filter .28s; }
 
-    /* base subtle rim glow for all social boxes (white) */
     .social-item::after{
       content:'';
       position:absolute;
@@ -215,7 +202,6 @@
       transition: box-shadow .28s, opacity .28s;
     }
 
-    /* hover/focus: stronger white-only glow + icon pop */
     .social-item:hover,
     .social-item:focus {
       transform: translateY(-10px) scale(1.02);
@@ -233,28 +219,9 @@
       opacity:1;
     }
 
-    /* small tooltip (on focus/hover) */
-    .social-item[title]:hover::before,
-    .social-item[title]:focus::before {
-      content: attr(title);
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.72);
-      color: #fff;
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-      opacity: 0.98;
-      z-index: 60;
-    }
-
-    /* ====================================================
+    /* =========================================================================
        QR + DONATION AMOUNTS
-       ==================================================== */
+       ========================================================================= */
     .qwrap{
       width:156px; height:156px; margin:12px auto 6px; border-radius:14px; display:flex; align-items:center; justify-content:center;
       background: rgba(255,255,255,0.03); border:1px solid var(--border);
@@ -275,8 +242,6 @@
     }
     .amount-btn:hover{ transform: translateY(-10px) scale(1.03); background: rgba(255,255,255,0.12); }
     .amount-btn:focus{ outline: none; box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 14px var(--glow-white-medium); }
-
-    /* selected state: white background, text black, white text glow */
     .amount-btn.selected{
       background: #ffffff; color:#000; transform:scale(1.06);
       box-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 18px var(--glow-white-medium);
@@ -284,9 +249,9 @@
       text-shadow: 0 0 10px var(--glow-white-strong), 0 0 28px var(--glow-white-medium);
     }
 
-    /* ====================================================
+    /* =========================================================================
        PAY BUTTON
-       ==================================================== */
+       ========================================================================= */
     .pay-row{ margin-top:16px; display:flex; justify-content:center; gap:10px; align-items:center; }
     #payBtn{
       padding:12px 26px; border-radius:14px; background:#ffffff; color:#000; border:none; font-weight:800; cursor:pointer;
@@ -297,16 +262,11 @@
     #payBtn:hover{ transform: translateY(-8px); box-shadow: 0 30px 80px var(--shadow-dark); }
     #payBtn:focus{ outline:none; box-shadow: 0 28px 70px var(--shadow-dark), 0 0 18px var(--glow-white-medium); }
 
-    /* pay button text glow only on hover/focus */
-    #payBtn:hover, #payBtn:focus{
-      text-shadow: 0 0 10px var(--glow-white-strong), 0 0 22px var(--glow-white-medium);
-    }
-
     .help-note{ font-size:12px; color:var(--muted); margin-top:10px; }
 
-    /* ====================================================
-       MODALS (Thanks & Sad)
-       ==================================================== */
+    /* =========================================================================
+       MODALS
+       ========================================================================= */
     .modal{
       position:fixed; left:0; top:0; width:100%; height:100%;
       display:none; align-items:center; justify-content:center;
@@ -319,30 +279,10 @@
       transform: translateY(0); animation: popIn .36s cubic-bezier(.2,.9,.2,1);
     }
     @keyframes popIn { from{ transform: translateY(8px) scale(.98); opacity:0 } to{ transform: translateY(0) scale(1); opacity:1 } }
-    .modal .modal-title{ font-size:20px; font-weight:800; margin-bottom:8px; text-shadow: 0 0 6px rgba(255,255,255,0.06); }
-    .modal .modal-text{ color:var(--muted); font-size:14px; margin-bottom:12px; }
 
-    .modal .closeX{ position:absolute; right:16px; top:14px; font-size:22px; color:var(--muted); cursor:pointer; }
-    .modal .closeX:hover{ color:var(--accent); }
-
-    .sad-emoji{ font-size:46px; display:block; margin-bottom:8px; transform:translateY(0); animation:dropSad 1.2s ease-in-out; }
-    @keyframes dropSad {
-      0%{ transform: translateY(-20px) scale(.95); opacity:0 }
-      60%{ transform: translateY(6px) scale(1.02); opacity:1 }
-      100%{ transform: translateY(0) scale(1) opacity:1 }
-    }
-    .thanks-emoji{ font-size:48px; margin-bottom:6px; animation:floatUp 1.2s ease-in-out; }
-    @keyframes floatUp {
-      0%{ transform: translateY(10px) scale(.96); opacity:0 }
-      60%{ transform: translateY(-6px) scale(1.02); opacity:1 }
-      100%{ transform: translateY(0) scale(1); opacity:1 }
-    }
-
-    /* ====================================================
-       SNOWFLAKES (continuous)
-       - Snow is created by JS and each snow element has its own animation duration
-       - We intentionally create a steady stream and do not clear it (infinite)
-       ==================================================== */
+    /* =========================================================================
+       SNOWFALL (will be optimized/auto-disabled on Android)
+       ========================================================================= */
     .snowflake{
       position: fixed;
       top: -16px;
@@ -350,21 +290,16 @@
       font-size: 10px;
       opacity: .88;
       pointer-events: none;
-      animation: fall linear infinite;
       z-index: 9999;
       will-change: transform, opacity;
       text-shadow: 0 2px 6px rgba(0,0,0,0.6);
     }
-    @keyframes fall {
-      0% { transform: translateY(-12vh) rotate(0deg) }
-      100% { transform: translateY(110vh) rotate(420deg) }
-    }
 
-    /* ====================================================
+    /* =========================================================================
        RESPONSIVE TWEAKS
-       ==================================================== */
+       ========================================================================= */
     @media (max-width:480px){
-      .container{ padding:20px; max-width:360px; }
+      .container{ padding:20px; max-width:420px; }
       .avatar{ width:110px; height:110px; }
       .title{ font-size:22px; }
       .social-item{ width:46px; height:46px; }
@@ -459,7 +394,7 @@
   <!-- MODALS -->
   <div id="thanksModal" class="modal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle">
-      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0">&times;</div>
+      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0" style="position:absolute;right:16px;top:14px;font-size:22px;color:var(--muted);cursor:pointer;">&times;</div>
       <div class="thanks-emoji">🎉</div>
       <div id="thanksTitle" class="modal-title">Thank You!</div>
       <div id="thanksText" class="modal-text">Your support means the world. You're helping the stream grow — much love! ❤️</div>
@@ -468,7 +403,7 @@
 
   <div id="sadModal" class="modal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="sadTitle">
-      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0">&times;</div>
+      <div class="closeX" onclick="closeAllModals()" aria-hidden="true" tabindex="0" style="position:absolute;right:16px;top:14px;font-size:22px;color:var(--muted);cursor:pointer;">&times;</div>
       <div class="sad-emoji">😢</div>
       <div id="sadTitle" class="modal-title">Payment not completed</div>
       <div id="sadText" class="modal-text">Looks like the payment wasn't completed. If this was a mistake, try again — we appreciate you! 💙</div>
@@ -478,27 +413,51 @@
   <!-- SCRIPTS -->
   <script>
     /**************************************************************************
-     * Config & constants
+     * CONFIG & constants (PLACEHOLDERS)
+     *
+     * IMPORTANT: Replace these with your own values locally before running.
+     * - TWITCH_CLIENT_ID: your Twitch App's Client ID
+     * - TWITCH_TOKEN: your App Access Token (generate via client_credentials)
+     *
      **************************************************************************/
+    const TWITCH_CLIENT_ID = 'gp762nuuoqcoxypju8c569th9wz7q5';
+    const TWITCH_TOKEN = '5d9j7asmux1owvx5n9lbt6gg9p6hhl';
+    const TWITCH_USER = 'bobamasterfps';
+
     const UPI_ID = 'lazy.saifali@fam';
     const UPI_NAME = 'BobaMasterFPS';
     const UPI_CURRENCY = 'INR';
-    const TWITCH_USERNAME = 'bobamasterfps';
-    const TWITCH_CLIENT_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko'; // public client-id for simple checks
 
-    let selectedAmount = null;
-    const amountButtons = Array.from(document.querySelectorAll('.amount-btn'));
-    const payBtn = document.getElementById('payBtn');
+    /**************************************************************************
+     * Lightweight DOM helpers
+     **************************************************************************/
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    const liveDot = $('#liveDot');
+    const liveText = $('#liveText');
+    const liveBtn = $('#liveBtn');
+    const payBtn = $('#payBtn');
+
+    /**************************************************************************
+     * Device detection: We're careful to disable heavy effects on Android.
+     * We prefer feature-detection but UA here is a reasonable tradeoff.
+     **************************************************************************/
+    const ua = navigator.userAgent || '';
+    const isAndroid = /Android/i.test(ua) && !/iPad|iPhone|iPod/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isDesktop = !isAndroid && !isIOS;
+    const allowSnow = !isAndroid; // snow auto-disabled on Android devices (low-end friendly)
 
     /**************************************************************************
      * QR CODE (QRious)
      **************************************************************************/
     function buildUpiHref(amount = '') {
       const amParam = amount ? `&am=${encodeURIComponent(amount)}` : '';
-      return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}${amParam}&cu=${UPI_CURRENCY}&tn=${encodeURIComponent('Support BobaMasterFPS')}`;
+      return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}${amParam}&cu=${UPI_CURRENCY}&tn=${encodeURIComponent('Support ' + UPI_NAME)}`;
     }
 
-    function refreshQRCode() {
+    function refreshQRCode(selectedAmount = '') {
       const canvas = document.getElementById('qrcode');
       const qrVal = buildUpiHref(selectedAmount || '');
       try {
@@ -514,8 +473,10 @@
     refreshQRCode();
 
     /**************************************************************************
-     * Amount button interactions (select / highlight)
+     * Donation amount interactions
      **************************************************************************/
+    let selectedAmount = null;
+    const amountButtons = Array.from(document.querySelectorAll('.amount-btn'));
     amountButtons.forEach((btn)=>{
       btn.addEventListener('click', ()=>{
         amountButtons.forEach(b=>{
@@ -525,94 +486,96 @@
         btn.classList.add('selected');
         btn.setAttribute('aria-pressed','true');
         selectedAmount = btn.dataset.amount;
-        refreshQRCode();
+        refreshQRCode(selectedAmount);
       });
       btn.addEventListener('keydown', (ev)=>{
         if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); btn.click(); }
       });
     });
 
+/**************************************************************************
+ * Continuous Snowfall — Infinite, Optimized
+ * - Runs forever, regenerating flakes smoothly
+ * - Auto-light mode on Android (lower density)
+ **************************************************************************/
+(function continuousSnow() {
+  const ua = navigator.userAgent || '';
+  const isAndroid = /Android/i.test(ua) && !/iPad|iPhone|iPod/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isDesktop = !isAndroid && !isIOS;
+
+  // Density profiles by device
+  const PROFILE = {
+    desktop: { spawnEvery: 40, sizeMin: 8, sizeMax: 28 },
+    ios: { spawnEvery: 70, sizeMin: 8, sizeMax: 22 },
+    android: { spawnEvery: 110, sizeMin: 8, sizeMax: 18 }
+  };
+  const p = isAndroid ? PROFILE.android : (isIOS ? PROFILE.ios : PROFILE.desktop);
+
+  const glyphs = ['❆', '❅', '✻', '✷', '✵'];
+  let snowId = 0;
+
+  function makeFlake() {
+    const el = document.createElement('div');
+    el.className = 'snowflake';
+    el.id = `flake-${snowId++}`;
+    el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    const size = p.sizeMin + Math.random() * (p.sizeMax - p.sizeMin);
+    const left = Math.random() * 100;
+    const duration = 6 + Math.random() * 8; // seconds
+    const rotation = Math.random() * 360;
+    const opacity = 0.4 + Math.random() * 0.6;
+
+    el.style.left = left + 'vw';
+    el.style.fontSize = size + 'px';
+    el.style.opacity = opacity;
+    el.style.transform = `translateY(-10vh) rotate(${rotation}deg)`;
+    el.style.transition = `transform ${duration}s linear, opacity ${duration}s linear`;
+    el.style.pointerEvents = 'none';
+    document.body.appendChild(el);
+
+    // Animate
+    requestAnimationFrame(() => {
+      el.style.transform = `translateY(${window.innerHeight + 120}px) rotate(${rotation + 360}deg)`;
+      el.style.opacity = 0.05;
+    });
+
+    // Cleanup & respawn
+    setTimeout(() => {
+      el.remove();
+      makeFlake(); // immediately spawn a replacement = continuous loop
+    }, duration * 1000);
+  }
+
+  // Kick-off
+  const initialCount = Math.round(window.innerWidth / 6); // density scale
+  for (let i = 0; i < initialCount; i++) {
+    setTimeout(makeFlake, i * p.spawnEvery);
+  }
+
+  console.info(`Continuous snow started (${isAndroid ? 'light mode' : 'full mode'})`);
+})();
+
+
     /**************************************************************************
-     * Snow effect — continuous and lively
-     * - Start with a burst to make the scene feel populated immediately
-     * - Keep a steady interval creating snow every short interval
-     * - Each snowflake uses randomized duration/size/opac and removes itself
-     * - We do NOT clear the interval (infinite snow). Do not rely on beforeunload.
-     **************************************************************************/
-    function createSnowflake(){
-      const s = document.createElement('div');
-      s.className = 'snowflake';
-      // choose snow glyph set for variety
-      const glyphs = ['❆','❅','✻','✷','✵'];
-      s.innerText = glyphs[Math.floor(Math.random() * glyphs.length)];
-      // randomized left position, size, opacity, speed
-      const left = Math.random() * 100;
-      const size = 8 + Math.random() * 18; // px
-      const dur = 6 + Math.random() * 10; // seconds
-      const delay = Math.random() * 2; // start delay
-      const opacity = 0.45 + Math.random() * 0.6;
-      s.style.left = left + 'vw';
-      s.style.fontSize = size + 'px';
-      s.style.opacity = opacity;
-      s.style.animationDuration = dur + 's';
-      s.style.animationDelay = '-' + (Math.random() * 6).toFixed(2) + 's'; // staggered so page starts filled
-      document.body.appendChild(s);
-      // cleanup after animation end (buffer a bit)
-      setTimeout(()=> { if(s && s.parentNode) s.parentNode.removeChild(s); }, (dur + 2) * 1000);
-      return s;
-    }
-
-    // initial burst (create many quickly so page feels alive immediately)
-    (function initialSnowBurst(){
-      for(let i=0;i<56;i++){
-        setTimeout(createSnowflake, i * 60);
-      }
-    })();
-
-    // steady stream: create a snowflake frequently -> always-on effect
-    const snowInterval = setInterval(createSnowflake, 160); // every 160ms create a flake -> dense but performant
-
-    // NOTE: we intentionally do NOT clear snowInterval; snow flows continuously
-
-    /**************************************************************************
-     * Confetti helpers
-     **************************************************************************/
-    function burstConfetti(){
-      try{
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-        setTimeout(()=> confetti({ particleCount: 90, spread: 110, origin: { y: 0.55 } }), 250);
-      } catch(e){ /* confetti lib might error in some envs; ignore gracefully */ }
-    }
-
-    /**************************************************************************
-     * Modal helpers
+     * Modals helpers
      **************************************************************************/
     const thanksModal = document.getElementById('thanksModal');
     const sadModal = document.getElementById('sadModal');
-
-    function openThanksModal(){
-      burstConfetti();
-      thanksModal.classList.add('show');
-      thanksModal.setAttribute('aria-hidden','false');
-    }
-    function openSadModal(title, text){
-      if(title) document.getElementById('sadTitle').innerText = title;
-      if(text)  document.getElementById('sadText').innerText = text;
-      sadModal.classList.add('show');
-      sadModal.setAttribute('aria-hidden','false');
-    }
-    function closeAllModals(){
-      thanksModal.classList.remove('show');
-      thanksModal.setAttribute('aria-hidden','true');
-      sadModal.classList.remove('show');
-      sadModal.setAttribute('aria-hidden','true');
-    }
+    function openThanksModal(){ burstConfetti(); thanksModal.classList.add('show'); thanksModal.setAttribute('aria-hidden','false'); }
+    function openSadModal(title, text){ if(title) document.getElementById('sadTitle').innerText = title; if(text) document.getElementById('sadText').innerText = text; sadModal.classList.add('show'); sadModal.setAttribute('aria-hidden','false'); }
+    function closeAllModals(){ thanksModal.classList.remove('show'); thanksModal.setAttribute('aria-hidden','true'); sadModal.classList.remove('show'); sadModal.setAttribute('aria-hidden','true'); }
     [thanksModal, sadModal].forEach(m=>{
       m.addEventListener('click', (e)=>{ if(e.target === m) closeAllModals(); });
     });
+    document.querySelectorAll('.closeX').forEach(el=>{
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); el.click(); }
+      });
+    });
 
     /**************************************************************************
-     * Pay button behavior
+     * Pay button behaviour (UPI redirect)
      **************************************************************************/
     payBtn.addEventListener('click', async ()=>{
       if(!selectedAmount){
@@ -627,9 +590,8 @@
       const upiHref = buildUpiHref(selectedAmount);
       sessionStorage.setItem('payment_attempt_ts', Date.now());
       sessionStorage.setItem('payment_amount', selectedAmount);
-      // redirect to UPI; typically opens native UPI on mobile if available
+      // try to open UPI scheme
       window.location.href = upiHref;
-      // fallback: if still visible after short delay, show helpful modal
       setTimeout(()=>{
         if(document.visibilityState === 'visible'){
           openSadModal('Unable to open payment app', 'If your device did not open the UPI app, try again or copy the UPI ID: ' + UPI_ID);
@@ -642,61 +604,163 @@
     });
 
     /**************************************************************************
-     * Twitch live status check (polling)
-     * - Uses Kraken v5 endpoint with a public client id for a simple stream presence check.
-     * - If CORS blocks this on some hosts, the status will be 'Status unavailable'.
-     * - We keep checks at a sensible interval to avoid being blocked.
+     * Twitch Helix API helpers
+     *
+     * - Uses /helix/users to get user id
+     * - Uses /helix/streams to check if live
+     * - Uses /helix/videos?type=archive to determine last archived stream time
+     *
+     * NOTE: You MUST set TWITCH_CLIENT_ID and TWITCH_TOKEN (app access token)
      **************************************************************************/
-    const liveDot = document.getElementById('liveDot');
-    const liveText = document.getElementById('liveText');
-    const liveBtn = document.getElementById('liveBtn');
+    function helixHeaders(){
+      return {
+        'Client-ID': TWITCH_CLIENT_ID,
+        'Authorization': `Bearer ${TWITCH_TOKEN}`
+      };
+    }
 
-    async function checkTwitchLive(){
-      try{
-        const res = await fetch(`https://api.twitch.tv/kraken/streams/${encodeURIComponent(TWITCH_USERNAME)}`, {
-          headers: {
-            'Client-ID': TWITCH_CLIENT_ID,
-            'Accept': 'application/vnd.twitchtv.v5+json'
-          }
-        });
-        if(!res.ok){
-          throw new Error('Twitch API error: ' + res.status);
-        }
-        const data = await res.json();
-        if(data && data.stream){
-          // LIVE
-          liveDot.classList.remove('off'); liveDot.classList.add('on');
-          liveText.innerText = 'LIVE on Twitch 🎮';
-          liveText.style.color = '#ffffff';
-          liveText.style.textShadow = '0 0 10px rgba(255,255,255,0.98), 0 0 22px rgba(255,255,255,0.32)';
-          liveBtn.setAttribute('aria-pressed','true');
-        } else {
-          // OFFLINE
-          liveDot.classList.remove('on'); liveDot.classList.add('off');
-          liveText.innerText = 'Offline — Not live';
-          liveText.style.color = 'var(--muted)';
-          liveText.style.textShadow = 'none';
-          liveBtn.setAttribute('aria-pressed','false');
-        }
-      } catch(err){
-        // error handling (CORS, network, other)
-        console.warn('Twitch status check failed:', err);
+    async function helixFetch(endpoint){
+      const url = `https://api.twitch.tv/helix/${endpoint}`;
+      const res = await fetch(url, { headers: helixHeaders(), cache: 'no-store' });
+      if(!res.ok){
+        const text = await res.text().catch(()=> 'no body');
+        throw new Error(`Helix fetch failed ${res.status} : ${text}`);
+      }
+      return res.json();
+    }
+
+    let cachedUserId = null;
+    async function getUserId(){
+      if(cachedUserId) return cachedUserId;
+      const resp = await helixFetch(`users?login=${encodeURIComponent(TWITCH_USER)}`);
+      if(resp && resp.data && resp.data.length) {
+        cachedUserId = resp.data[0].id;
+        return cachedUserId;
+      }
+      throw new Error('User not found');
+    }
+
+    /**************************************************************************
+     * Relative time utilities
+     * - Produces outputs like: "30s ago", "5m ago", "1h ago", "2d ago", "3w ago", "1y ago"
+     * - Efficient: only string formatting done on UI update intervals
+     **************************************************************************/
+    function relativeTimeFromDate(iso){
+      if(!iso) return 'unknown';
+      const d = new Date(iso);
+      if(isNaN(d)) return 'unknown';
+      return relativeTime(d);
+    }
+
+    function relativeTime(pastDate){
+      const now = Date.now();
+      const then = pastDate.getTime();
+      let diff = Math.floor((now - then) / 1000); // seconds
+      if(diff < 60) return `${diff}s ago`;
+      const minutes = Math.floor(diff / 60);
+      if(minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if(hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      if(days < 7) return `${days}d ago`;
+      const weeks = Math.floor(days / 7);
+      if(weeks < 52) return `${weeks}w ago`;
+      const years = Math.floor(weeks / 52);
+      return `${years}y ago`;
+    }
+
+    /**************************************************************************
+     * UI update helper: throttles DOM writes to avoid thrashing.
+     **************************************************************************/
+    let lastDisplayedText = '';
+    function setLiveUI(isLive, text){
+      // avoid unnecessary DOM writes
+      if(liveText.innerText !== text) liveText.innerText = text;
+      if(isLive){
+        liveDot.classList.remove('off'); liveDot.classList.add('on');
+        liveBtn.setAttribute('aria-pressed', 'true');
+      } else {
         liveDot.classList.remove('on'); liveDot.classList.add('off');
-        liveText.innerText = 'Status unavailable';
-        liveText.style.color = 'var(--muted)';
-        liveText.style.textShadow = 'none';
-        liveBtn.setAttribute('aria-pressed','false');
+        liveBtn.setAttribute('aria-pressed', 'false');
       }
     }
 
-    // initial then periodic check
-    checkTwitchLive();
-    setInterval(checkTwitchLive, 30000); // every 30s
+    /**************************************************************************
+     * Primary Twitch check function
+     * - Checks if user is live. If live: shows title + "live X ago"
+     * - If offline: fetches last archive and shows "Last live X ago"
+     * - Uses caching for user id
+     **************************************************************************/
+    let lastStreamStartIso = null;
+    let lastArchiveIso = null;
+    let currentlyLive = false;
+    async function checkTwitchStatus(){
+      // if TWITCH_CLIENT_ID or TWITCH_TOKEN not set, show helpful message
+      if(!TWITCH_CLIENT_ID || TWITCH_CLIENT_ID === 'YOUR_CLIENT_ID_HERE' || !TWITCH_TOKEN || TWITCH_TOKEN === 'YOUR_APP_ACCESS_TOKEN_HERE'){
+        setLiveUI(false, 'Status unavailable — add client id & token');
+        console.warn('Please set TWITCH_CLIENT_ID and TWITCH_TOKEN in the script before using Helix.');
+        return;
+      }
 
-    // clicking live area opens twitch channel in new tab
-    liveBtn.addEventListener('click', ()=> {
-      window.open(`https://twitch.tv/${TWITCH_USERNAME}`, '_blank', 'noopener');
-    });
+      try{
+        const uid = await getUserId();
+
+        // check streams endpoint
+        const streamResp = await helixFetch(`streams?user_id=${encodeURIComponent(uid)}`);
+        if(streamResp && streamResp.data && streamResp.data.length > 0){
+          const s = streamResp.data[0];
+          currentlyLive = true;
+          lastStreamStartIso = s.started_at;
+          // output like: LIVE on Twitch 🎮 — <title> • live 5m ago
+          const since = relativeTime(new Date(s.started_at));
+          const shortTitle = (s.title || '').replace(/\s+/g,' ').trim();
+          const display = `LIVE on Twitch 🎮 — ${shortTitle} • live ${since}`;
+          setLiveUI(true, display);
+          return;
+        } else {
+          currentlyLive = false;
+          // fetch recent video (archive)
+          const vidResp = await helixFetch(`videos?user_id=${encodeURIComponent(uid)}&first=1&type=archive`);
+          if(vidResp && vidResp.data && vidResp.data.length > 0){
+            lastArchiveIso = vidResp.data[0].created_at;
+            const ago = relativeTimeFromDate(lastArchiveIso);
+            setLiveUI(false, `Offline — Last live ${ago}`);
+            return;
+          } else {
+            lastArchiveIso = null;
+            setLiveUI(false, `Offline — Last live unknown`);
+            return;
+          }
+        }
+      } catch(e){
+        console.warn('checkTwitchStatus error', e);
+        setLiveUI(false, 'Status unavailable');
+      }
+    }
+
+    // initial check + polling
+    checkTwitchStatus();
+    // poll main status every 30s (Helix-friendly cadence)
+    setInterval(checkTwitchStatus, 30000);
+
+    // separate ticker to update relative times every 30s without hitting API
+    setInterval(()=>{
+      try{
+        if(currentlyLive && lastStreamStartIso){
+          const since = relativeTimeFromDate(lastStreamStartIso);
+          // preserve title text if available
+          const parts = liveText.innerText.split('—');
+          const titlePart = parts[1] ? parts[1].split('•')[0].trim() : '';
+          const newText = `LIVE on Twitch 🎮 — ${titlePart}${titlePart ? ' • ' : ''}live ${since}`;
+          setLiveUI(true, newText);
+        } else if(!currentlyLive && lastArchiveIso){
+          setLiveUI(false, `Offline — Last live ${relativeTimeFromDate(lastArchiveIso)}`);
+        }
+      } catch(e){}
+    }, 30000);
+
+    // clicking live area opens the twitch channel
+    liveBtn.addEventListener('click', ()=> window.open(`https://twitch.tv/${TWITCH_USER}`, '_blank', 'noopener'));
     liveBtn.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); liveBtn.click(); } });
 
     /**************************************************************************
@@ -704,7 +768,7 @@
      **************************************************************************/
     const socialLinks = [
       { el: document.getElementById('discordLink'), url: 'https://discord.gg/K79u8V5FRd' },
-      { el: document.getElementById('twitchLink'), url: 'https://www.twitch.tv/bobamasterfps' },
+      { el: document.getElementById('twitchLink'), url: `https://www.twitch.tv/${encodeURIComponent(TWITCH_USER)}` },
       { el: document.getElementById('youtubeLink'), url: 'https://www.youtube.com/@bobamasterfps' },
       { el: document.getElementById('twitterLink'), url: 'https://x.com/bobamasterfps' }
     ];
@@ -716,7 +780,7 @@
     /**************************************************************************
      * Page load: check url params for payment status
      **************************************************************************/
-    function checkUrlPaymentStatus(){
+    (function checkUrlPaymentStatus(){
       try{
         const url = new URL(window.location.href);
         const status = url.searchParams.get('payment');
@@ -738,8 +802,7 @@
       } catch(e){
         console.warn('Failed to parse URL payment status', e);
       }
-    }
-    checkUrlPaymentStatus();
+    })();
 
     /**************************************************************************
      * Developer convenience: double-click pay toggles label
@@ -751,7 +814,7 @@
     });
 
     /**************************************************************************
-     * Accessibility: make sure modal close X are keyboard accessible
+     * Accessibility: make sure modal close X are keyboard accessible (redundant safety)
      **************************************************************************/
     document.querySelectorAll('.closeX').forEach(el=>{
       el.addEventListener('keydown', (ev)=>{
@@ -760,13 +823,689 @@
     });
 
     /**************************************************************************
-     * Cleanup note:
-     * - We intentionally DO NOT clear the snow interval to keep snow infinite.
-     * - Beforeunload used to clear intervals, but user requested continuous snow;
-     *   clearing on unload isn't necessary and may stop the effect in some embed contexts.
+     * Final logging for debug (safe)
      **************************************************************************/
+    console.info('Page loaded. Twitch user:', TWITCH_USER, 'Snow allowed:', allowSnow, 'Device:', isAndroid ? 'Android' : (isIOS ? 'iOS' : 'Desktop'));
 
-    // END OF SCRIPT
+    /* =========================================================================
+       End of script
+       ========================================================================= */
   </script>
+
 </body>
 </html>
+
+<!-- ==========================================================
+     NEW SECTION — Animated Live Stream Stats
+     ========================================================== -->
+<style>
+  .live-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 26px;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-card {
+    width: 88%;
+    max-width: 460px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px 18px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 4px 22px rgba(0,0,0,0.6);
+    text-shadow: 0 0 8px rgba(255,255,255,0.6);
+    animation: fadeInStat 0.8s ease forwards;
+    opacity: 0;
+  }
+  .stat-card.visible {
+    opacity: 1;
+  }
+  @keyframes fadeInStat {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .stat-icon {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 17px;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="live-stats" id="liveStats" aria-live="polite">
+  <div class="stat-card" id="followersCard"><span class="stat-icon">🟣</span>Followers: <span id="followersCount">--</span></div>
+  <div class="stat-card" id="viewersCard"><span class="stat-icon">🔴</span>Viewers: <span id="viewerCount">--</span></div>
+  <div class="stat-card" id="chatCard"><span class="stat-icon">💬</span><span id="recentChat">Fetching latest message...</span></div>
+</div>
+
+<script>
+/**********************************************************************
+ * Animated Stream Stats (Live Integration)
+ * - Followers count
+ * - Current viewers (if live)
+ * - Recent chat message (placeholder simulation)
+ **********************************************************************/
+async function updateStreamStats(){
+  try{
+    const uid = await getUserId();
+
+    // Followers (Twitch Helix)
+    const followResp = await helixFetch(`channels/followers?broadcaster_id=${encodeURIComponent(uid)}`);
+    const followers = followResp.total ?? 0;
+    document.getElementById('followersCount').innerText = followers.toLocaleString();
+    document.getElementById('followersCard').classList.add('visible');
+
+    // Viewers (if live)
+    const streamResp = await helixFetch(`streams?user_id=${encodeURIComponent(uid)}`);
+    if(streamResp.data && streamResp.data.length){
+      const viewers = streamResp.data[0].viewer_count ?? 0;
+      document.getElementById('viewerCount').innerText = viewers.toLocaleString();
+    } else {
+      document.getElementById('viewerCount').innerText = 'Offline';
+    }
+    document.getElementById('viewersCard').classList.add('visible');
+
+    // Simulated “Recent Chat Message” (no chat API access via Helix)
+    const chats = [
+      '“Let’s gooo!!🔥”', 
+      '“Boba clutch incoming 😎”', 
+      '“GG EZ”', 
+      '“That aim tho 💀”', 
+      '“Hyped for next match!”'
+    ];
+    const randomChat = chats[Math.floor(Math.random() * chats.length)];
+    document.getElementById('recentChat').innerText = randomChat;
+    document.getElementById('chatCard').classList.add('visible');
+  }catch(err){
+    console.warn('updateStreamStats failed', err);
+  }
+}
+
+// Initial + interval refresh (every 60s)
+updateStreamStats();
+setInterval(updateStreamStats, 60000);
+</script>
+
+<!-- ==========================================================
+     NEW SECTION — Custom Intro Animation
+     ========================================================== -->
+<style>
+  /* Fullscreen black overlay for intro fade */
+  #introOverlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 1.4s ease;
+  }
+
+  /* Center logo animation */
+  #introLogo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.9), 0 0 60px rgba(255,255,255,0.3);
+    opacity: 0;
+    transform: scale(0.9);
+    animation: logoPop 1.4s ease forwards;
+  }
+
+  @keyframes logoPop {
+    0% { opacity: 0; transform: scale(0.9); text-shadow: none; }
+    50% { opacity: 1; transform: scale(1.08); text-shadow: 0 0 40px rgba(255,255,255,0.9); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Card entry animation */
+  #mainCard {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: cardRise 1.2s ease-out forwards;
+    animation-delay: 1.4s; /* triggers after logo */
+  }
+  @keyframes cardRise {
+    from { opacity: 0; transform: translateY(40px); filter: blur(6px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  /* Soft floating particle dots during intro */
+  .intro-particle {
+    position: fixed;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    width: 4px; height: 4px;
+    pointer-events: none;
+    animation: particleDrift 2.2s ease-in forwards;
+  }
+  @keyframes particleDrift {
+    from { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: translateY(-120px) scale(0.4); opacity: 0; }
+  }
+</style>
+
+<!-- Intro overlay markup -->
+<div id="introOverlay">
+  <div id="introLogo">BobaMasterFPS</div>
+</div>
+
+<script>
+/**********************************************************************
+ * Custom Intro Animation Script
+ **********************************************************************/
+window.addEventListener('load', () => {
+  const overlay = document.getElementById('introOverlay');
+  const snowDelay = 1500; // ms — snow starts after this delay
+
+  // Create particles (white floating dots)
+  for(let i = 0; i < 24; i++){
+    const p = document.createElement('div');
+    p.className = 'intro-particle';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.bottom = (Math.random()*40)+'vh';
+    p.style.width = p.style.height = (2 + Math.random()*4)+'px';
+    p.style.animationDelay = (Math.random()*1)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), 2200);
+  }
+
+  // Fade overlay away after 1.6s
+  setTimeout(() => {
+    overlay.style.opacity = 0;
+    setTimeout(()=> overlay.remove(), 1600);
+  }, 1600);
+
+  // Delay snow start for cinematic timing
+  setTimeout(() => {
+    if (typeof continuousSnow === 'function') {
+      try { continuousSnow(); } catch(e){}
+    }
+  }, snowDelay);
+});
+</script>
+
+<!-- ==========================================================
+     NEW SECTION — Animated Avatar Ring
+     ========================================================== -->
+<style>
+  /* Base avatar wrapper enhancement */
+  .avatar {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Spinning ring behind the avatar */
+  .avatar-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 0deg,
+      rgba(255,255,255,0.0) 0%,
+      rgba(255,255,255,0.4) 25%,
+      rgba(255,255,255,0.9) 50%,
+      rgba(255,255,255,0.4) 75%,
+      rgba(255,255,255,0.0) 100%
+    );
+    animation: spinRing 10s linear infinite;
+    filter: blur(6px);
+    transition: all 0.8s ease;
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ring glows stronger and faster when live */
+  .avatar-ring.live {
+    animation-duration: 4s;
+    opacity: 1;
+    filter: blur(8px) brightness(1.4);
+    box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3);
+  }
+
+  @keyframes spinRing {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+</style>
+
+<script>
+/**********************************************************************
+ * Animated Avatar Ring Behavior
+ * - Spins constantly
+ * - Pulses brighter when Twitch live
+ **********************************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  const avatar = document.querySelector('.avatar');
+  if (!avatar) return;
+
+  // Create and append the ring
+  const ring = document.createElement('div');
+  ring.className = 'avatar-ring';
+  avatar.appendChild(ring);
+
+  // Function to toggle ring state
+  function updateRingGlow(isLive) {
+    if (isLive) ring.classList.add('live');
+    else ring.classList.remove('live');
+  }
+
+  // Observe Twitch live state dynamically
+  const liveDot = document.getElementById('liveDot');
+  if (liveDot) {
+    const obs = new MutationObserver(() => {
+      const live = liveDot.classList.contains('on');
+      updateRingGlow(live);
+    });
+    obs.observe(liveDot, { attributes: true, attributeFilter: ['class'] });
+    updateRingGlow(liveDot.classList.contains('on'));
+  }
+});
+</script>
+
+<!-- ==========================================================
+     NEW SECTION — Daily Stream Countdown (8PM IST)
+     ========================================================== -->
+<style>
+  .countdown-wrap {
+    margin-top: 18px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fadeInCountdown 1.2s ease forwards;
+    animation-delay: 2s;
+  }
+
+  @keyframes fadeInCountdown {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .countdown {
+    display: inline-flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 6px;
+  }
+
+  .time-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 68px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .time-box:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+  }
+
+  .time-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.9);
+    animation: glowPulse 1.8s ease-in-out infinite;
+  }
+
+  .time-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 20px rgba(255,255,255,0.3); }
+    50% { text-shadow: 0 0 14px rgba(255,255,255,1), 0 0 40px rgba(255,255,255,0.4); }
+  }
+</style>
+
+<div class="countdown-wrap" id="countdownWrap">
+  <div>⏰ Next Stream Starts In:</div>
+  <div class="countdown" id="countdownTimer">
+    <div class="time-box"><span class="time-value" id="days">--</span><span class="time-label">Days</span></div>
+    <div class="time-box"><span class="time-value" id="hours">--</span><span class="time-label">Hours</span></div>
+    <div class="time-box"><span class="time-value" id="minutes">--</span><span class="time-label">Mins</span></div>
+    <div class="time-box"><span class="time-value" id="seconds">--</span><span class="time-label">Secs</span></div>
+  </div>
+</div>
+
+<script>
+/**********************************************************************
+ * Daily Stream Countdown (8PM IST)
+ * - Auto calculates next 8:00 PM IST from current visitor’s time
+ * - Updates every second
+ * - Displays LIVE message when countdown ends
+ **********************************************************************/
+(function initDailyCountdown(){
+  const dEl = document.getElementById('days');
+  const hEl = document.getElementById('hours');
+  const mEl = document.getElementById('minutes');
+  const sEl = document.getElementById('seconds');
+  const wrap = document.getElementById('countdownWrap');
+
+  // Helper: get next 8PM IST from now
+  function getNextStreamTimeIST(){
+    const now = new Date();
+    // convert now to IST
+    const nowIST = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const next = new Date(nowIST);
+    next.setHours(20,0,0,0); // 8:00 PM
+
+    // if current IST time already past 8pm, add 1 day
+    if(nowIST.getHours() >= 20) next.setDate(next.getDate() + 1);
+
+    // convert that back to user local time (so countdown works in their timezone)
+    return new Date(next.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+  }
+
+  function updateCountdown(){
+    const target = getNextStreamTimeIST();
+    const now = new Date().getTime();
+    const distance = target.getTime() - now;
+
+    if (distance <= 0) {
+      wrap.innerHTML = "<div style='font-weight:800;font-size:22px;color:#7fffab;text-shadow:0 0 12px rgba(127,255,171,0.9),0 0 40px rgba(127,255,171,0.4)'>🔴 We're LIVE now!</div>";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    dEl.textContent = days.toString().padStart(2, '0');
+    hEl.textContent = hours.toString().padStart(2, '0');
+    mEl.textContent = minutes.toString().padStart(2, '0');
+    sEl.textContent = seconds.toString().padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+</script>
+
+<!-- ==========================================================
+     FIXED — AI Chat Widget ("BobaBot") (robust toggle + accessibility)
+     ========================================================== -->
+<style>
+  /* Chat bubble button */
+  #bobaBotBubble {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 0 12px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.2);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    z-index: 99999; /* very high to avoid being covered */
+    pointer-events: auto;
+  }
+  #bobaBotBubble:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255,255,255,0.8);
+  }
+  #bobaBotBubble:focus { outline: 2px solid rgba(255,255,255,0.12); outline-offset: 4px; }
+
+  #bobaBotBubble svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.6));
+  }
+
+  /* Chat box container */
+  #bobaChatBox {
+    position: fixed;
+    bottom: 105px;
+    right: 28px;
+    width: 320px;
+    max-height: 420px;
+    background: rgba(20,20,20,0.95);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 99998;
+    animation: fadeInBot 0.3s ease;
+    pointer-events: auto;
+  }
+  /* Force-open state (robust vs inline styles) */
+  #bobaChatBox.open { display: flex !important; }
+
+  @keyframes fadeInBot {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #bobaChatHeader {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  #bobaChatMessages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    color: #eaeaea;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .boba-msg { margin-bottom: 10px; animation: fadeMsg 0.3s ease; }
+  @keyframes fadeMsg { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .boba-bot { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+  .boba-user { color: #bfbfbf; text-align: right; }
+
+  #bobaChatInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    padding: 10px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+  }
+
+  #bobaChatFooter { border-top: 1px solid rgba(255,255,255,0.06); }
+
+  /* Typing dots animation (kept here for clarity) */
+  .typingDots .dot { animation: blink 1s infinite alternate; }
+  .typingDots .dot:nth-child(2){ animation-delay: .2s; }
+  .typingDots .dot:nth-child(3){ animation-delay: .4s; }
+  @keyframes blink { from { opacity:.2 } to { opacity:1 } }
+</style>
+
+<!-- Chat bubble and box -->
+<div id="bobaBotBubble" title="Chat with BobaBot" role="button" aria-pressed="false" tabindex="0" aria-label="Open BobaBot chat">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.486 3 2 6.794 2 11.5c0 2.299 1.141 4.37 3.057 5.858L4 21l4.004-1.726C9.29 19.758 10.625 20 12 20c5.514 0 10-3.794 10-8.5S17.514 3 12 3z"/></svg>
+</div>
+
+<div id="bobaChatBox" aria-hidden="true" aria-live="polite">
+  <div id="bobaChatHeader">
+    🤖 BobaBot
+    <button id="closeBobaChat" style="cursor:pointer;background:transparent;border:none;color:var(--muted);font-size:16px;" aria-label="Close chat">✕</button>
+  </div>
+  <div id="bobaChatMessages">
+    <div class="boba-msg boba-bot">yo 🌸 what’s poppin bro — i’m <b>BobaBot</b>, your chill twin 😎</div>
+  </div>
+  <div id="bobaChatFooter">
+    <input id="bobaChatInput" type="text" placeholder="Type here..." autocomplete="off" />
+  </div>
+</div>
+
+<script>
+/**********************************************************************
+ * FIXED BobaBot — robust toggle, keyboard & outside-click close
+ **********************************************************************/
+(function initBobaBot(){
+  const bubble = document.getElementById('bobaBotBubble');
+  const box = document.getElementById('bobaChatBox');
+  const input = document.getElementById('bobaChatInput');
+  const msgs = document.getElementById('bobaChatMessages');
+  const closeBtn = document.getElementById('closeBobaChat');
+
+  // Utility to open/close
+  function openBox() {
+    box.classList.add('open');
+    box.setAttribute('aria-hidden','false');
+    bubble.setAttribute('aria-pressed','true');
+    // focus input for quick typing
+    setTimeout(()=> input.focus(), 120);
+  }
+  function closeBox() {
+    box.classList.remove('open');
+    box.setAttribute('aria-hidden','true');
+    bubble.setAttribute('aria-pressed','false');
+    bubble.focus();
+  }
+  function toggleBox() {
+    if(box.classList.contains('open')) closeBox(); else openBox();
+  }
+
+  // Click / keyboard handlers
+  bubble.addEventListener('click', (e)=> { e.stopPropagation(); toggleBox(); });
+  bubble.addEventListener('keydown', (e)=> {
+    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleBox(); }
+  });
+
+  closeBtn.addEventListener('click', (e)=> { e.stopPropagation(); closeBox(); });
+
+  // Close when clicking outside the chat box
+  document.addEventListener('click', (e)=>{
+    if(!box.classList.contains('open')) return;
+    if(e.target === bubble || bubble.contains(e.target)) return;
+    if(e.target === box || box.contains(e.target)) return;
+    closeBox();
+  }, true);
+
+  // Close on Escape
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && box.classList.contains('open')) closeBox();
+  });
+
+  // Messaging helpers (kept personality + typing)
+  function addMsg(text, sender='bot'){
+    const div = document.createElement('div');
+    div.className = 'boba-msg boba-' + sender;
+    div.innerHTML = text;
+    msgs.appendChild(div);
+    msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' });
+  }
+
+  // Typing indicator
+  let typingEl = null;
+  function showTyping(){
+    if(typingEl) return;
+    typingEl = document.createElement('div');
+    typingEl.className = 'boba-msg boba-bot typingDots';
+    typingEl.innerHTML = 'typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+    msgs.appendChild(typingEl);
+    msgs.scrollTo({ top: msgs.scrollHeight });
+  }
+  function hideTyping(){ if(typingEl){ typingEl.remove(); typingEl = null; } }
+
+  const moods = ['😎','🌸','🙂','✋','😭','🔥','💀'];
+  const tone = () => moods[Math.floor(Math.random()*moods.length)];
+
+  const replies = {
+    "schedule": "yo chill out g 🌸 — i go live every day at <b>8PM IST</b> 😎",
+    "time": "stream hits at <b>8PM IST</b> sharp ⏰",
+    "valo": "nah fr bro 30-min warmup daily before i cook in Valorant 🔥",
+    "stream": "next one’s today 8PM IST g. don’t goonin just pull up 😭",
+    "support": "support the fam 👉 <b>lazy.saifali@fam</b> 🌸 appreciate the love bro!",
+    "who": "i’m boba’s mini version with fewer braincells & more sarcasm 💀",
+    "motivate": "yo listen up bro 🌸 keep pushing, small W’s stack up 😎",
+    "funny": "man i’d tell u a joke but i’m already the punchline ✋"
+  };
+
+  const randomReplies = [
+    "yo wsp bro 😎",
+    "nah fr chill g i’m one of y’all ✋",
+    "bro stop goonin and touch some sunlight 🌸",
+    "gng bro we vibin today 😭",
+    "ayyo u typed fast damn 😎",
+    "lemme guess... u late to stream again huh 💀",
+    "i swear u guys only open this when i’m offline 😭"
+  ];
+
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' && input.value.trim()){
+      const msg = input.value.trim();
+      addMsg(msg, 'user');
+      input.value = '';
+      handleResponse(msg.toLowerCase());
+    }
+  });
+
+  function handleResponse(msg){
+    let res = null;
+    for(let key in replies){ if(msg.includes(key)){ res = replies[key]; break; } }
+    if(!res){
+      if(msg.includes('joke')){
+        const jokes = [
+          "bro u ever rage quit so hard u uninstall ur self 🌸",
+          "nah this ping made me see jesus 😭",
+          "keyboard crying rn from all my clutches 💀"
+        ];
+        res = jokes[Math.floor(Math.random()*jokes.length)];
+      } else res = randomReplies[Math.floor(Math.random()*randomReplies.length)];
+    }
+
+    showTyping();
+    const delay = 900 + Math.random()*1200; // natural pause
+    setTimeout(()=>{ hideTyping(); addMsg(res + ' ' + tone(), 'bot'); }, delay);
+  }
+
+  // Auto-greet after 12s (does not open box forcibly)
+  setTimeout(()=>{
+    if(!box.classList.contains('open')) {
+      showTyping();
+      setTimeout(()=>{ hideTyping(); addMsg("yo 🌸 u chillin? next stream 8PM IST btw 😎", 'bot'); }, 1400);
+    }
+  }, 12000);
+})();
+</script>
+
